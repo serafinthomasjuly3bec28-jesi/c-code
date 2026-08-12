@@ -1,0 +1,48 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int m = s.length();
+        int n = p.length();
+        
+        // Initialize an (m+1) x (n+1) matrix filled with false
+        vector<vector<bool>> dp(m + 1, vector<bool>(n + 1, false));
+        
+        // Base case: empty string and empty pattern match
+        dp[0][0] = true;
+        
+        // Base case: empty string vs non-empty pattern
+        for (int j = 2; j <= n; ++j) {
+            if (p[j - 1] == '*') {
+                dp[0][j] = dp[0][j - 2];
+            }
+        }
+        
+        // Fill the DP table
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                // If current pattern character is a match or wildcard '.'
+                if (p[j - 1] == '.' || p[j - 1] == s[i - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } 
+                // If current pattern character is '*'
+                else if (p[j - 1] == '*') {
+                    // Option 1: Match zero times (skip the preceding character and '*')
+                    dp[i][j] = dp[i][j - 2];
+                    
+                    // Option 2: Match one or more times (if preceding character is a valid match)
+                    char preceding_char = p[j - 2];
+                    if (preceding_char == '.' || preceding_char == s[i - 1]) {
+                        dp[i][j] = dp[i][j] || dp[i - 1][j];
+                    }
+                }
+            }
+        }
+        
+        return dp[m][n];
+    }
+};
