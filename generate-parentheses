@@ -1,0 +1,37 @@
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Solution {
+private:
+    void backtrack(int open_count, int close_count, string& current, vector<string>& result, int n) {
+        // Base case: If the current string reaches maximum length (2 * n)
+        if (current.length() == 2 * n) {
+            result.push_back(current);
+            return;
+        }
+
+        // Rule 1: Add an opening bracket if we haven't reached the limit 'n'
+        if (open_count < n) {
+            current.push_back('(');
+            backtrack(open_count + 1, close_count, current, result, n);
+            current.pop_back(); // Backtrack
+        }
+
+        // Rule 2: Add a closing bracket if it matches an unclosed opening bracket
+        if (close_count < open_count) {
+            current.push_back(')');
+            backtrack(open_count, close_count + 1, current, result, n);
+            current.pop_back(); // Backtrack
+        }
+    }
+
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> result;
+        string current = "";
+        backtrack(0, 0, current, result, n);
+        return result;
+    }
+};
