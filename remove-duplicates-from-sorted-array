@@ -1,0 +1,26 @@
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        // Edge case: an empty array has 0 unique elements
+        if (nums.empty()) return 0;
+        
+        // Tracks the index where the next unique element should be written
+        int k = 1; 
+        
+        // Iterate through the array starting from the second element
+        for (size_t i = 1; i < nums.size(); i++) {
+            // Since the array is sorted, a difference indicates a new unique element
+            if (nums[i] != nums[i - 1]) {
+                nums[k] = nums[i];
+                k++;
+            }
+        }
+        
+        // k is the total number of unique elements
+        return k;
+    }
+};
