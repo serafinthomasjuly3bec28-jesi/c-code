@@ -1,0 +1,29 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        if (strs.empty()) return "";
+        
+        // Sort the strings alphabetically
+        sort(strs.begin(), strs.end());
+        
+        string first = strs.front();
+        string last = strs.back();
+        string result = "";
+        
+        // Compare only the first and last strings
+        for (size_t i = 0; i < first.length() && i < last.length(); i++) {
+            if (first[i] != last[i]) {
+                break;
+            }
+            result += first[i];
+        }
+        
+        return result;
+    }
+};
