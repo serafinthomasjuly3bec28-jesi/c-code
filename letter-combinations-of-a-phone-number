@@ -1,0 +1,47 @@
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Solution {
+private:
+    // Telephone keypad mapping where index matches the digit integer
+    const vector<string> keypad = {
+        "",     "",     "abc",  "def", 
+        "ghi",  "jkl",  "mno",  "pqrs", 
+        "tuv",  "wxyz"
+    };
+
+    void backtrack(const string& digits, int index, string& current, vector<string>& result) {
+        // Base case: if the combination matches the input length
+        if (index == digits.length()) {
+            result.push_back(current);
+            return;
+        }
+
+        // Convert character digit to integer index
+        int digit = digits[index] - '0';
+        const string& letters = keypad[digit];
+
+        // Loop through all letters mapped to this digit
+        for (char c : letters) {
+            current.push_back(c);                          // Choose
+            backtrack(digits, index + 1, current, result); // Explore
+            current.pop_back();                           // Unchoose (backtrack)
+        }
+    }
+
+public:
+    vector<string> letterCombinations(string digits) {
+        vector<string> result;
+        
+        // Edge case: empty input string
+        if (digits.empty()) {
+            return result;
+        }
+        
+        string current = "";
+        backtrack(digits, 0, current, result);
+        return result;
+    }
+};
