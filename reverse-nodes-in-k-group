@@ -1,0 +1,60 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        // Base case validation
+        if (head == nullptr || k == 1) return head;
+        
+        // Dummy node to handle head pointer swaps cleanly
+        ListNode dummy(0);
+        dummy.next = head;
+        
+        ListNode* prevGroupTail = &dummy;
+        ListNode* curr = head;
+        
+        while (curr != nullptr) {
+            // Check if there are at least k nodes remaining to reverse
+            ListNode* groupTail = prevGroupTail;
+            for (int i = 0; i < k; i++) {
+                groupTail = groupTail->next;
+                if (groupTail == nullptr) {
+                    // Fewer than k nodes remaining, leave them as they are
+                    return dummy.next;
+                }
+            }
+            
+            // Keep track of the node starting the next group
+            ListNode* nextGroupHead = groupTail->next;
+            
+            // Reverse the current block of k nodes
+            // Initialize 'prev' to nextGroupHead so the tail of this reversed group 
+            // points automatically to the next group's head
+            ListNode* prev = nextGroupHead;
+            ListNode* tempCurr = curr;
+            for (int i = 0; i < k; i++) {
+                ListNode* nextNode = tempCurr->next;
+                tempCurr->next = prev;
+                prev = tempCurr;
+                tempCurr = nextNode;
+            }
+            
+            // Connect the head of the newly reversed group to the preceding group tail
+            prevGroupTail->next = groupTail;
+            
+            // The original group head ('curr') is now the tail of this reversed group
+            prevGroupTail = curr;
+            curr = nextGroupHead;
+        }
+        
+        return dummy.next;
+    }
+};
