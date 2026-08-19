@@ -1,0 +1,36 @@
+#include <string>
+#include <stack>
+
+using namespace std;
+
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+        
+        for (char c : s) {
+            // Push opening brackets onto the stack
+            if (c == '(' || c == '{' || c == '[') {
+                st.push(c);
+            } 
+            // Handle closing brackets
+            else {
+                // If stack is empty, a closing bracket has no opening pair
+                if (st.empty()) return false;
+                
+                char top = st.top();
+                // Check if the closing bracket matches the most recent opening bracket
+                if ((c == ')' && top == '(') || 
+                    (c == '}' && top == '{') || 
+                    (c == ']' && top == '[')) {
+                    st.pop(); // Match found, remove from stack
+                } else {
+                    return false; // Mismatched brackets found
+                }
+            }
+        }
+        
+        // If stack is empty, all brackets were successfully closed
+        return st.empty();
+    }
+};
