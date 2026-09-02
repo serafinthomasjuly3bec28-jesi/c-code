@@ -1,0 +1,39 @@
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        // Overflow case
+        if (dividend == INT_MIN && divisor == -1)
+            return INT_MAX;
+
+        long long a = dividend;
+        long long b = divisor;
+
+        // Determine the sign
+        bool negative = (a < 0) ^ (b < 0);
+
+        // Work with positive values
+        a = llabs(a);
+        b = llabs(b);
+
+        long long result = 0;
+
+        // Subtract the largest possible doubled divisor each time
+        while (a >= b) {
+            long long temp = b;
+            long long multiple = 1;
+
+            while (a >= temp + temp) {
+                temp += temp;
+                multiple += multiple;
+            }
+
+            a -= temp;
+            result += multiple;
+        }
+
+        if (negative)
+            result = -result;
+
+        return (int)result;
+    }
+};
