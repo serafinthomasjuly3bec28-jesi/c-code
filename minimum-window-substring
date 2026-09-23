@@ -1,0 +1,64 @@
+#include <stdlib.h>
+#include <string.h>
+
+char* minWindow(char* s, char* t) {
+    int need[128] = {0};
+    int have[128] = {0};
+
+    int m = strlen(s);
+    int n = strlen(t);
+
+    // Count required characters
+    for (int i = 0; i < n; i++) {
+        need[(unsigned char)t[i]]++;
+    }
+
+    int left = 0;
+    int count = 0;          // Number of required characters currently matched
+    int minLen = m + 1;
+    int minStart = 0;
+
+    for (int right = 0; right < m; right++) {
+        char c = s[right];
+        have[(unsigned char)c]++;
+
+        // This character contributes to satisfying t
+        if (have[(unsigned char)c] <= need[(unsigned char)c]) {
+            count++;
+        }
+
+        // Try to shrink the window
+        while (count == n) {
+            int windowLen = right - left + 1;
+
+            if (windowLen < minLen) {
+                minLen = windowLen;
+                minStart = left;
+            }
+
+            char leftChar = s[left];
+
+            have[(unsigned char)leftChar]--;
+
+            if (have[(unsigned char)leftChar] < need[(unsigned char)leftChar]) {
+                count--;
+            }
+
+            left++;
+        }
+    }
+
+    // No valid window
+    if (minLen == m + 1) {
+        char* result = malloc(1);
+        result[0] = '\0';
+        return result;
+    }
+
+    // Allocate and return the minimum window
+    char* result = malloc(minLen + 1);
+    memcpy(result, s + minStart, minLen);
+    result[minLen] = '\0';
+
+    return result;
+}
