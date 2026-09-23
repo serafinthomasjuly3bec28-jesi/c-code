@@ -1,0 +1,71 @@
+char* simplifyPath(char* path) {
+    int n = strlen(path);
+
+    // Stack of directory names
+    char** stack = malloc(sizeof(char*) * (n + 1));
+    int top = 0;
+
+    int i = 0;
+
+    while (i < n) {
+        // Skip consecutive slashes
+        while (i < n && path[i] == '/')
+            i++;
+
+        if (i >= n)
+            break;
+
+        // Find the next component
+        int start = i;
+
+        while (i < n && path[i] != '/')
+            i++;
+
+        int len = i - start;
+
+        // "." -> current directory, ignore it
+        if (len == 1 && path[start] == '.') {
+            continue;
+        }
+
+        // ".." -> parent directory
+        if (len == 2 && path[start] == '.' && path[start + 1] == '.') {
+            if (top > 0) {
+                free(stack[top - 1]);
+                top--;
+            }
+            continue;
+        }
+
+        // Normal directory/file name
+        stack[top] = malloc(len + 1);
+        memcpy(stack[top], path + start, len);
+        stack[top][len] = '\0';
+        top++;
+    }
+
+    // Allocate result
+    char* result = malloc(n + 2);
+    int pos = 0;
+
+    result[pos++] = '/';
+
+    for (int j = 0; j < top; j++) {
+        int len = strlen(stack[j]);
+
+        memcpy(result + pos, stack[j], len);
+        pos += len;
+
+        if (j < top - 1)
+            result[pos++] = '/';
+
+        free(stack[j]);
+    }
+
+    // Root path should just be "/"
+    result[pos] = '\0';
+
+    free(stack);
+
+    return result;
+}
